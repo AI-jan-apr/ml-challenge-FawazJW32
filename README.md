@@ -1,39 +1,189 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/xQBZeI33)
-# Machine learning Challenge
-
----
-
 ### Overview
-This project comprises two related tasks aimed at utilizing machine learning techniques to handle noise in datasets. The tasks involve generating noisy data, preprocessing it, and applying machine learning models to either classify or remove the noise effectively.
 
----
+This project contains two machine learning tasks focused on:
 
-### Task 1: Multi-Label Classification Using Machine Learning
-This task focuses on multi-label classification using machine learning.
+- Multi-Label Classification
 
-#### File Details
-- Use the provided notebook `Task 1.ipynb`.
+- Noise Introduction and Removal using Machine Learning
 
-#### Instructions
-1. Load the data
-2. Convert your labels y into a multi-label format, by creating two columns:
-    - Odd or Not: This column indicates whether the label is odd (True) or not (False).
-    - Greater Than 5: This column indicates whether the label is greater than 5 (True) or not (False).
-3. Implement a machine learning model of your choice to perform multi-label classification.
-4. Evaluate your model.
+Both tasks are implemented using the MNIST dataset (mnist_784) from OpenML.
 
----
+- The goal is to understand how machine learning models behave when:
 
-### Task 2: Noise Removal Using Machine Learning
-This task focuses on identifying and removing noise from datasets using machine learning.
+- Predicting multiple labels per sample
 
-#### File Details
-- Use the provided notebook `Task 2.ipynb`.
+- Learning to reconstruct clean data from noisy inputs
 
-#### Instructions
-1. Use a random generation method to introduce noise into your dataset.
-2. Preprocess the dataset.
-3. Implement a machine learning model that suit the problem.
-4. Evaluate your model.
+### ✅ Task 1 — Multi-Label Classification
+🎯 Objective
 
----
+Convert the original MNIST digit labels into a multi-label format, then train a model to predict both labels simultaneously.
+
+Instead of predicting:
+```text
+Digit = 7
+```
+We predict two properties:
+```text
+Odd or Not
+
+Greater Than 5
+```
+Example:
+```text
+Digit	Odd	Greater Than 5
+3	True	False
+8	False	True
+```
+### 🛠 Methodology
+1️⃣ Load Dataset
+```text
+MNIST (70,000 images)
+
+28x28 grayscale images (784 features)
+```
+2️⃣ Convert Labels
+
+Two binary labels were created:
+```text
+Odd = (digit % 2 == 1)
+
+GreaterThan5 = (digit > 5)
+```
+3️⃣ Model
+
+Used:
+```text
+StandardScaler
+
+OneVsRestClassifier
+
+LogisticRegression
+```
+- Implemented inside a Pipeline to prevent data leakage.
+
+4️⃣ Evaluation Metrics
+
+Since this is multi-label classification, I used:
+
+- Precision
+
+- Recall
+
+- F1-Score
+
+- Subset Accuracy (strict metric)
+
+Subset Accuracy counts a sample as correct only if both labels are correct.
+
+### 📊 Results
+
+The model successfully learned both binary tasks simultaneously.
+
+Multi-label classification allows a single input to have multiple outputs, which is useful in:
+
+- Image tagging
+
+- NLP tagging systems
+
+- Recommendation systems
+
+### ✅ Task 2 — Noise Removal Using Machine Learning
+🎯 Objective
+
+- Simulate noise in image data and train a model to reconstruct the original clean image.
+
+This is a denoising regression problem.
+
+### 🛠 Methodology
+1️⃣ Normalize Images
+
+Pixel values scaled from:
+```text
+[0, 255] → [0, 1]
+```
+2️⃣ Add Gaussian Noise
+
+Noise was introduced using:
+```text
+X_noisy = X_clean + Gaussian noise
+```
+Noise standard deviation controlled corruption strength.
+
+3️⃣ Model
+
+Used:
+
+- StandardScaler
+
+- Ridge Regression
+
+- Pipeline ensures:
+
+Scaling learned from training data only
+
+- No data leakage
+
+The model learns:
+```text
+Noisy Image → Clean Image
+```text
+4️⃣ Evaluation Metrics
+```
+Used regression metrics:
+
+- Mean Squared Error (MSE)
+
+- Root Mean Squared Error (RMSE)
+
+Lower RMSE indicates better reconstruction.
+
+### 📈 Visualization
+
+For evaluation, we plotted:
+
+- Noisy image
+
+- Reconstructed image
+
+- Ground truth clean image
+
+This visually demonstrates the model’s ability to remove noise.
+
+### 🧠 Key Concepts Learned
+🔹 Multi-Label Classification
+```text
+One sample → Multiple outputs
+```
+Different from multi-class classification.
+
+🔹 Data Leakage Prevention
+
+- Split before scaling
+
+- Fit scaler only on training data
+
+- Use Pipeline for safety
+
+🔹 Noise Robustness
+
+- Real-world datasets are often noisy.
+- Machine learning models must handle corrupted or imperfect data.
+
+🔹 Denoising via Regression
+
+- Mapping corrupted input back to clean output.
+
+### 📦 Requirements
+```text
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+jupyter
+```
+Install using:
+```text
+pip install -r requirements.txt
+```
